@@ -1,13 +1,18 @@
 
 setwd("~/Desktop/Winter 2023/GSB 530/Group Project")
-df <- read_excel("Big_Data_Files.xlsx", sheet = "COVID_Testing")
 
+df <- read_excel("Big_Data_Files.xlsx", sheet = "COVID_Testing")
+df <- na.omit(df)
 
 #Clean
 df$Age_60_And_Above <- ifelse(df$Age_60_And_Above == "Yes", 1, 0)
 df$Male <- ifelse(df$Sex == "male", 1, 0)
 df$Positive <- ifelse(df$Result == "positive", 1, 0)
 
+#Basic logistic regression
 model1 <- glm(Positive ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact + Male + Positive , data = df, family = "binomial")
 summary(model1)
+
+#Subset the data 
+male_df <- df[df$Male == 1, ]
 
