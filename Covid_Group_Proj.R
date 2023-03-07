@@ -7,3 +7,7 @@ df <- read_excel("Big_Data_Files.xlsx", sheet = "COVID_Testing")
 df$Age_60_And_Above <- ifelse(df$Age_60_And_Above == "Yes", 1, 0)
 df$Male <- ifelse(df$Sex == "male", 1, 0)
 df$Positive <- ifelse(df$Result == "positive", 1, 0)
+
+model1 <- glm(Positive ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact + Male + Positive , data = df, family = "binomial")
+summary(model1)
+
