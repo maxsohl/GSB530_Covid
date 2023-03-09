@@ -1,0 +1,115 @@
+---
+title: "Data Mining Project - Covid Analysis"
+output: html_document
+date: "2023-03-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+library(vip)
+library(caret)
+suppressWarnings(RNGversion("3.5.3"))
+```
+
+```{r}
+df <- read_excel("~/Downloads/Big_Data_Files.xlsx", sheet = "COVID_Testing")
+df <- na.omit(df)
+```
+
+```{r}
+df$Age_60_And_Above <- ifelse(df$Age_60_And_Above == "Yes", 1, 0)
+df$Male <- ifelse(df$Sex == "male", 1, 0)
+df$Result <- ifelse(df$Result == "positive", 1, 0)
+```
+
+
+```{r}
+male_df <- df[df$Male == 1, ]
+female_df <- df[df$Male == 0, ]
+elderly_df <- df[df$Age_60_And_Above == 1, ]
+nonelderly_df <- df[df$Age_60_And_Above == 0, ]
+```
+
+
+```{r}
+# Covid Dataset
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(1)
+myIndex <- createDataPartition(df$Result, p=0.6, list=FALSE)
+trainSet <- df[myIndex,]
+validationSet <- df[-myIndex,]
+set.seed(1)
+
+model1 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact + Male , data = trainSet, family = "binomial")
+summary(model1)
+
+vip(model1)
+```
+
+
+```{r}
+#male 
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(1)
+myIndex <- createDataPartition(male_df$Result, p=0.6, list=FALSE)
+trainSet <- male_df[myIndex,]
+validationSet <- male_df[-myIndex,]
+set.seed(1)
+
+model2 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact, data = trainSet, family = "binomial")
+summary(model2)
+
+vip(model2)
+```
+
+
+```{r}
+#female
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(1)
+myIndex <- createDataPartition(female_df$Result, p=0.6, list=FALSE)
+trainSet <- female_df[myIndex,]
+validationSet <- female_df[-myIndex,]
+set.seed(1)
+
+model3 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact, data = trainSet, family = "binomial")
+summary(model3)
+
+vip(model3)
+```
+
+
+```{r}
+#elder
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(1)
+myIndex <- createDataPartition(elderly_df$Result, p=0.6, list=FALSE)
+trainSet <- elderly_df[myIndex,]
+validationSet <- elderly_df[-myIndex,]
+set.seed(1)
+
+model4 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Male + Contact, data = trainSet, family = "binomial")
+summary(model4)
+
+vip(model4)
+```
+
+
+```{r}
+#non_elder
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(1)
+myIndex <- createDataPartition(nonelderly_df$Result, p=0.6, list=FALSE)
+trainSet <- nonelderly_df[myIndex,]
+validationSet <- nonelderly_df[-myIndex,]
+set.seed(1)
+
+model5 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Male + Contact, data = trainSet, family = "binomial")
+summary(model5)
+
+vip(model5)
+```
