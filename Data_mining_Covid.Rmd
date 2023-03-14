@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(vip)
 library(caret)
+library(pROC)
 suppressWarnings(RNGversion("3.5.3"))
 ```
 
@@ -57,6 +58,14 @@ prediction <- predict(model1, validationSet, type = "response")
 prediction = ifelse(prediction > 0.1, 1, 0)
 prediction = as.factor(prediction)
 confusionMatrix(prediction, validationSet$Result)
+```
+
+
+```{r}
+
+roc_object <- roc(validationSet$Result, as.numeric(prediction))
+plot.roc(roc_object)
+auc(roc_object)
 ```
 
 
