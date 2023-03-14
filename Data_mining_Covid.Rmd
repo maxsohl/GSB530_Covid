@@ -24,6 +24,7 @@ df <- na.omit(df)
 df$Age_60_And_Above <- ifelse(df$Age_60_And_Above == "Yes", 1, 0)
 df$Male <- ifelse(df$Sex == "male", 1, 0)
 df$Result <- ifelse(df$Result == "positive", 1, 0)
+df$Result <- as.factor(df$Result)
 ```
 
 
@@ -44,10 +45,18 @@ trainSet <- df[myIndex,]
 validationSet <- df[-myIndex,]
 set.seed(1)
 
-model1 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact + Male , data = trainSet, family = "binomial")
+model1 <- glm(Result ~ Cough + Fever + Sore_Throat + Shortness_Of_Breath + Headache + Age_60_And_Above + Contact , data = trainSet, family = binomial)
 summary(model1)
 
 vip(model1)
+```
+
+
+```{r}
+prediction <- predict(model1, validationSet, type = "response")
+prediction = ifelse(prediction > 0.1, 1, 0)
+prediction = as.factor(prediction)
+confusionMatrix(prediction, validationSet$Result)
 ```
 
 
